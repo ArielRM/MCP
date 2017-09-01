@@ -1,0 +1,69 @@
+Testes:
+	k	$s0
+	-1	-1
+	0	10
+	1	6
+	2	3
+	3	-2
+	4	-1
+
+Questões:	
+
+1 - Qual o enderço de memória do primeiro elemento armazenado na JAT?
+	jat: 0x10010014
+
+2 - A que endereços efetivos de memmória correspondem os seguintes rótulos?
+	L0: 0x00400050		L1: 0x00400058		L2: 0x00400064
+	L3: 0x0040006C		default: 0x00400074
+
+3 - A pseudo-instrução la $t4,jat foi expandida pelo montador em termos de duas instruções
+nativas no MIPS. Reproduza-as abaixo em linguagem de montagem usando os nomes simbólicos dos
+registradores utilizados no código. Indique também o respectivo código em linguagem de máquina,
+representado em hexadecimal.
+	
+	Linguagem de montagem		Linguagem de máquina
+	lui $t4,0x00001001		0x3C011001
+	ori $t4,0x00000014		0x342C0014
+
+4 -  As instruções que carregam os valores inicializados de f, g, h, i e j em registradores não fazem
+parte do código gerado para o switch, mas apenas servem para evitar que você tenha que inicializá-
+las cada vez que mudar o valor de k. Entretanto, é interessante notar que a carga de cada um daqueles
+valores usa uma pseudo-instrução, que é expandida em duas instruções nativas. Mostre a expansão
+para a pseudo-instrução lw $s0, _f (em linguagem de montagem), usando os nomes simbólicos dos
+registradores utilizados no código.
+
+	Linguagem de montagem
+	lui $s0,0x00001001
+	lw $s0,0($s0)
+
+5 - Para o código da questão 4, qual o valor atribuído a $at?
+	$at: 0x10010000
+
+6 - Mostre o código em linguagem de montagem que testa se k pertence a [0,3] (seção4) e desvia para o endereço default
+	
+	
+
+7 - Qual a codificação em linguagem de máquina da instrução j exit?
+	j exit <=> 0x08100020
+
+8 - O rótulo exit foi resolvido pelo montador. Que endereço lhe foi atribuido?
+	exit <=> 0x00400080
+
+9 - Qual o valor dos 26 bits menos significativos da representação binária da instrução j exit?
+
+25 24	23 22 21 20	19 18 17 16	15 14 13 12	11 10 09 08	07 06 05 04	03 02 01 00
+0  0	0  0  0  1	0  0  0  0	0  0  0  0	0  0  0  0	0  0  1  0	0  0  0  0
+
+10 - Comente a consistência dos valores obtidos nas questões 8 e 9, mostrando como um deles é
+obtido a partir do outro.
+
+O endereço de exit pode ser obtido deslocando-se o valor obtido na questão 9 em dois bits à esquerda.
+A instrução j tem os seis primeiros bits 0x02 (0000 10) como op code, já os outros 26 bits (25-0) representam o endereço alvo, porém endereços têm 32 bits, para que essa instrução seja válida são necessárias duas observações. Primeiro, os dois ultimos bits do endereço são sempre 0, pois qualquer endereço de programa é um múltiplo de quatro. A segunda observação à ser feita é que o valor final de PC terá seus 4 bits mais significativos inalterados apósa instrução j. Logo o endereço final de PC pode ser obtido com o seguinte formato (PC & 0xf0000000)|(alvo<<2), onde alvo é a representação de 26 bits da instrução.
+
+Sendo PCn o valor de PC ao fim da instrução temos:
+
+	alvo:				0x00100020
+	alvo << 2:			0x00400080 (Endereço de exit)
+	PC no início da instrução:	0x0XXXXXXX
+	PC & 0xf0000000:		0x00000000
+PCn  =	(PC & 0xf0000000)|(alvo<<2):	0x00400080 (Endereço de exit)
