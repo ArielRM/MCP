@@ -18,7 +18,6 @@ fib:
 	move $s0,$a0
 	move $s1,$a1	
 	
-	li $t0,1
 	beq $s0,2,n2
 	beq $s0,1,n1
 	
@@ -36,9 +35,10 @@ fib:
 		sw $t0,-4($s0)		# saida[n-1] = $t0
 		j fim		
 	n2:
-		sw $t0,4($a1)
+		addiu $a0,$a0,-1
+		sw $a0,4($a1)
 	n1:
-		sw $t0,0($a1)
+		sw $a0,0($a1)
 	fim:
 	
 	lw $s1,0($sp)
@@ -47,3 +47,20 @@ fib:
 	addiu $sp,$sp,16
 	
 	jr $ra
+	
+
+#void fib(int n, int* s)
+#{
+#	if(n == 1)
+#		s[0] = 1
+#	if(n == 2)
+#	{
+#		s[0] = 1		
+#		s[1] = 1
+#	}
+#	else
+#	{
+#		fib(n-1,s);
+#		s[n-1] = s[n-3] + s[n-2];
+#	}
+#}
